@@ -10,45 +10,55 @@ void processQuery(const string& query, Array& array) {
     stringstream ss(query);
     string token;
 
-    // Split query into parts
-    while (getline(ss, token, ' ')) {
+    while (getline(ss, token, ' ')) {// Разбиваем строку запроса на отдельные токены, используя пробел как разделитель
         tokens.push_back(token);
     }
 
+    
     if (tokens[0] == "MPUSH") {
         if (tokens.size() == 3) {
-            int index = stoi(tokens[1]);
-            string value = tokens[2];
-            array.add(index, value); // Add element to array at index
+            int index = stoi(tokens[1]); // Преобразование индекса в целое число
+            string value = tokens[2];    // Значение, которое нужно добавить
+            array.add(index, value);     // Вызов метода add для добавления элемента
         } else {
             cout << "Error: MPUSH command requires 2 arguments." << endl;
         }
-    } else if (tokens[0] == "MDEL") {
+    }
+  
+    else if (tokens[0] == "MDEL") {
         if (tokens.size() == 2) {
-            int index = stoi(tokens[1]);
-            array.remove(index); // Remove element by index
+            int index = stoi(tokens[1]); // Преобразование индекса в целое число
+            array.remove(index);         // Вызов метода remove для удаления элемента
         } else {
             cout << "Error: MDEL command requires 1 argument." << endl;
         }
-    } else if (tokens[0] == "MGET") {
+    }
+ 
+    else if (tokens[0] == "MGET") {
         if (tokens.size() == 2) {
-            int index = stoi(tokens[1]);
-            string value = array.get(index); // Get element by index
-            cout << "Element at index " << index << ": " << value << endl;
+            int index = stoi(tokens[1]); // Преобразование индекса в целое число
+            string value = array.get(index); // Вызов метода get для получения элемента
+            cout << "Element at index " << index << ": " << value << endl; // Вывод значения
         } else {
             cout << "Error: MGET command requires 1 argument." << endl;
         }
-    } else if (tokens[0] == "MREPLACE") {
+    }
+    
+    else if (tokens[0] == "MREPLACE") {
         if (tokens.size() == 3) {
-            int index = stoi(tokens[1]);
-            string value = tokens[2];
-            array.replace(index, value); // Replace element by index
+            int index = stoi(tokens[1]); // Преобразование индекса в целое число
+            string value = tokens[2];    // Новое значение для замены
+            array.replace(index, value); // Вызов метода replace для замены элемента
         } else {
             cout << "Error: MREPLACE command requires 2 arguments." << endl;
         }
-    } else if (tokens[0] == "PRINT") {
-        array.print(); // Display array
-    } else {
+    }
+    
+    else if (tokens[0] == "PRINT") {
+        array.print(); 
+    }
+    
+    else {
         cout << "Unknown command: " << tokens[0] << endl;
     }
 }
@@ -56,35 +66,35 @@ void processQuery(const string& query, Array& array) {
 int main(int argc, char* argv[]) {
     string query;
     string filename;
-    int capacity = 10; // Default array size
+    int capacity = 10; // Задаем изначальную емкость массива
+    Array array(capacity); // Создаем объект Array с заданной емкостью
 
-    // Default array with a size of 10
-    Array array(capacity);
 
-    // Reading command line arguments
-    for (int i = 1; i < argc; i++) {
+    for (int i = 1; i < argc; i++) {  // Обработка аргументов командной строки
         string arg = argv[i];
-        if (arg == "--file" && i + 1 < argc) {
-            filename = argv[++i];  // Get file name
+    
+        if (arg == "--file" && i + 1 < argc) {// Проверка на наличие --file для загрузки данных из файла
+            filename = argv[++i];
         }
-        if (arg == "--query" && i + 1 < argc) {
-            query = argv[++i];  // Get query
+        if (arg == "--query" && i + 1 < argc) {// Проверка на наличие флага --query для выполнения запроса
+            query = argv[++i];
         }
     }
 
-    // Load data from file, if specified
+    // Если был указан файл, загружаем данные массива из файла
     if (!filename.empty()) {
         array.loadFromFile(filename);
     }
 
+    // Если был указан запрос, обрабатываем его
     if (!query.empty()) {
-        processQuery(query, array); // Process the query
+        processQuery(query, array); // Вызов функции для обработки запроса
     } else {
         cout << "Error: query not specified." << endl;
         return 1;
     }
 
-    // Save data to file after processing the query, if file is specified
+    // Если был указан файл, сохраняем данные массива обратно в файл
     if (!filename.empty()) {
         array.saveToFile(filename);
     }
