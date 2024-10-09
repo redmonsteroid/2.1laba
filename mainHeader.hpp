@@ -22,3 +22,26 @@ struct Array {
     void saveToFile(const std::string& filename);
     void loadFromFile(const std::string& filename);
 };
+
+struct Stack {
+    Node *top;
+    int size;
+
+    Stack() : top(nullptr), size(0) {}
+
+    void push( string value );
+    void pop();
+    void print();
+};
+
+struct Queue {
+    Node *front;
+    Node *end;
+    int size;
+
+    Queue() : front(nullptr), end(nullptr), size(0) {}
+
+    void push( string value );
+    void pop();
+    void print();
+};
