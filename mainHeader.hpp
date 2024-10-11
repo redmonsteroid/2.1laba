@@ -32,6 +32,8 @@ struct Stack {
     void push( string value );
     void pop();
     void print();
+    void saveToFile(const std::string& filename);
+    void loadFromFile(const std::string& filename);
 };
 
 struct Queue {
@@ -44,4 +46,6 @@ struct Queue {
     void push( string value );
     void pop();
     void print();
+    void saveToFile(const std::string& filename);
+    void loadFromFile(const std::string& filename);
 };

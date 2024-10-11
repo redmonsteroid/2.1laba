@@ -131,6 +131,7 @@ int main(int argc, char* argv[]) {
     // Если был указан файл, сохраняем данные массива обратно в файл
     if (!filename.empty()) {
         array.saveToFile(filename);
+        stack.saveToFile(filename);
     }
 
     return 0;

@@ -1,6 +1,7 @@
 #include "mainHeader.hpp"
 #include "node.hpp"
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 // last in first out
@@ -30,13 +31,13 @@ void Stack::print() {
     }
     cout << endl;
 }
-void Array::saveToFile(const string& filename) {
+void Stack::saveToFile(const string& filename) {
     ofstream outFile(filename);
     if (!outFile.is_open()) {
         cout << "Cannot open file for writing: " << filename << endl;
         return;
     }
-    Node* temp = head;
+    Node* temp = top;
     while (temp) {
         outFile << temp->data << endl;
         temp = temp->next;
@@ -44,7 +45,7 @@ void Array::saveToFile(const string& filename) {
     outFile.close();
 }
 
-void Array::loadFromFile(const string& filename) {
+void Stack::loadFromFile(const string& filename) {
     ifstream inFile(filename);
     if (!inFile.is_open()) {
         cout << "Cannot open file for reading: " << filename << endl;
@@ -52,7 +53,7 @@ void Array::loadFromFile(const string& filename) {
     }
     string line;
     while (getline(inFile, line)) {
-        addToTheEnd(line);
+        push(line);
     }
     inFile.close();
 }
