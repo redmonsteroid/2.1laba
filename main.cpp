@@ -2,6 +2,7 @@
 #include <sstream>
 #include <vector>
 #include "mainHeader.hpp"
+#include <fstream>
 
 using namespace std;
 
@@ -172,7 +173,23 @@ int main(int argc, char* argv[]) {
         // Проверка команд для двусвязного списка
         else if (command[0] == 'L' && command[1] == 'D') {
             doublyList.loadFromFile(filename);
+        } 
+        else if (command == "PRINT") {
+            if (!filename.empty()) {
+        ifstream file(filename);
+        if (file.is_open()) {
+            string line;
+            while (getline(file, line)) {
+                cout << line << endl;
+            }
+            file.close();
         } else {
+            cout << "Error: could not open file " << filename << endl;
+        }
+    } else {
+        cout << "Error: no file specified for PRINT." << endl;
+    } 
+        }else {
             cout << "Error: unrecognized command type." << endl;
             return 1;
         }
@@ -207,7 +224,9 @@ int main(int argc, char* argv[]) {
         }
         else if (command[0] == 'L' && command[1] == 'D') {
             doublyList.saveToFile(filename);
-        } else {
+        }else if (command == "PRINT") {
+           return 1; 
+        }else {
             cout << "Error: unrecognized command type." << endl;
             return 1;
         }
