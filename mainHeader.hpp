@@ -23,6 +23,42 @@ struct Array {
     void loadFromFile(const std::string& filename);
 };
 
+struct SinglyLinkedList {
+    Node *head;
+    int size;
+
+    SinglyLinkedList() : head(nullptr), size(0) {}
+
+    void addToHead(string value);
+    void addToTail(string value);
+    void removeHead();
+    void removeTail();
+    void removeByValue(string value);
+    Node* search(string value);
+    void print();
+    void saveToFile(const std::string& filename);
+    void loadFromFile(const std::string& filename);
+};
+
+struct DoublyLinkedList {
+    DoublyNode* head = nullptr;
+    DoublyNode* tail = nullptr;
+    int size;
+
+    DoublyLinkedList() : head(nullptr), tail(nullptr), size(0) {}
+
+    void addToHead(string value);
+    void addToTail(string value);
+    void removeFromHead();
+    void removeFromTail();
+    void removeByValue(string value);
+    DoublyNode* search(string value);
+    void print();
+    void saveToFile(const std::string& filename);
+    void loadFromFile(const std::string& filename);
+};
+
+
 struct Stack {
     Node *top;
     int size;

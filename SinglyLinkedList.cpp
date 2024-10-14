@@ -13,102 +13,88 @@ void SinglyLinkedList::addToHead(string value){
     size++;
 }
 
-void SinglyLinkedList::addToTail(string value){
-    Node *newNode = new Node(value);
-    if (head == nullptr){ // список пуст -> новый узел голова
+void SinglyLinkedList::addToTail(std::string value) {
+    Node* newNode = new Node(value);
+    if (head == nullptr) {
         head = newNode;
     } else {
         Node* current = head;
-        while (current->next != nullptr){ // до конца 
-            curent = current->next;
+        while (current->next != nullptr) {
+            current = current->next;
         }
         current->next = newNode;
     }
     size++;
 }
 
-void SinglyLinkedlist::removeFromHead(){
-    if (head == nullptr){
-        cout << " list is empty" << endl;
+void SinglyLinkedList::removeHead() {
+    if (head == nullptr) {
         return;
-    } else {
-        Node *temp = head;
-        head = head -> next;
-        delete temp;
-        size--;
     }
+    Node* temp = head;
+    head = head->next;
+    delete temp;
+    size--;
 }
 
-void SinglyLinkedlist::removeFromTail(){
-    if (head == nullptr){
-        cout << " list is empty" << endl;
+void SinglyLinkedList::removeTail() {
+    if (head == nullptr) {
         return;
     }
-
-    if (head -> next == nullptr){ // один элемент в листе
+    if (head->next == nullptr) {
         delete head;
-        head == nullptr;
+        head = nullptr;
     } else {
         Node* current = head;
-        while (current->next->next != nullptr){ // до предпоследнего
-            curent = current->next;
+        while (current->next->next != nullptr) {
+            current = current->next;
         }
         delete current->next;
-        current->next = nullptr;   
+        current->next = nullptr;
     }
     size--;
 }
 
-void SinglyLinkedList::removeByValue(string value) {
+void SinglyLinkedList::removeByValue(std::string value) {
     if (head == nullptr) {
-        cout << " List is empty." << endl;
         return;
     }
-
-    if (head->data == value) {  // Если элемент в голове
-        removeFromHead();
+    if (head->data == value) {
+        removeHead();
         return;
     }
-
     Node* current = head;
-    while (current->next != nullptr && current->next->data != value) {  // Поиск узла перед нужным
-        current = current->next;
-    }
-
-    if (current->next != nullptr) {
-        Node* temp = current->next;  // Временный указатель на узел, который нужно удалить
-        current->next = current->next->next;  // Переподключаем указатели
-        delete temp;  
-        size--; 
-    } else {
-        cout << " Value not found." << endl;
-    }
-}
-
-
-Node* SinglyLinkedList::searchByValue(string value) {
-    Node* current = head;
-    while (current != nullptr) {
-        if (current->data == value) {
-            return current;  // Возвращаем узел, если значение совпало
+    while (current->next != nullptr) {
+        if (current->next->data == value) {
+            Node* temp = current->next;
+            current->next = temp->next;
+            delete temp;
+            size--;
+            return;
         }
         current = current->next;
     }
-    cout << " Value not found." << endl;
-    return nullptr;  // Если элемент не найден, возвращаем nullptr
 }
 
+Node* SinglyLinkedList::search(std::string value) {
+    Node* current = head;
+    while (current != nullptr) {
+        if (current->data == value) {
+            return current;
+        }
+        current = current->next;
+    }
+    return nullptr;
+}
 
 void SinglyLinkedList::print() {
     Node* current = head;
     while (current != nullptr) {
-        cout << current->data << " -> ";
+        std::cout << current->data << " ";
         current = current->next;
     }
-    cout << "nullptr" << endl;
+    std::cout << std::endl;
 }
-
-
 
 void SinglyLinkedList::saveToFile(const string& filename) {
     ofstream file(filename);

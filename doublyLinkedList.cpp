@@ -6,19 +6,18 @@
 
 using namespace std;
 
-void DoublyLinkedList::addToHead(string value) {
+void DoublyLinkedList::addToHead(std::string value) {
     DoublyNode* newNode = new DoublyNode(value);
     if (head == nullptr) {
         head = tail = newNode;
     } else {
         newNode->next = head;
-        head-> prev = newNode;
+        head->prev = newNode;
         head = newNode;
     }
-    size++;
 }
 
-void DoublyLinkedList::addToTail(string value) {
+void DoublyLinkedList::addToTail(std::string value) {
     DoublyNode* newNode = new DoublyNode(value);
     if (tail == nullptr) {
         head = tail = newNode;
@@ -27,42 +26,37 @@ void DoublyLinkedList::addToTail(string value) {
         tail->next = newNode;
         tail = newNode;
     }
-    size++;
 }
 
 void DoublyLinkedList::removeFromHead() {
     if (head == nullptr) {
-        cout << "List is empty." << endl;
         return;
     }
     DoublyNode* temp = head;
-    if (head == tail) {  // Если в списке один элемент
-        head = tail = nullptr;
-    } else {
-        head = head->next;
+    head = head->next;
+    if (head != nullptr) {
         head->prev = nullptr;
+    } else {
+        tail = nullptr;
     }
     delete temp;
-    size--;
 }
 
 void DoublyLinkedList::removeFromTail() {
     if (tail == nullptr) {
-        cout << "List is empty." << endl;
         return;
     }
     DoublyNode* temp = tail;
-    if (head == tail) {  // Если в списке один элемент
-        head = tail = nullptr;
-    } else {
-        tail = tail->prev;
+    tail = tail->prev;
+    if (tail != nullptr) {
         tail->next = nullptr;
+    } else {
+        head = nullptr;
     }
     delete temp;
-    size--;
 }
 
-void DoublyLinkedList::removeByValue(string value) {
+void DoublyLinkedList::removeByValue(std::string value) {
     DoublyNode* current = head;
     while (current != nullptr) {
         if (current->data == value) {
@@ -74,16 +68,14 @@ void DoublyLinkedList::removeByValue(string value) {
                 current->prev->next = current->next;
                 current->next->prev = current->prev;
                 delete current;
-                size--;
             }
             return;
         }
         current = current->next;
     }
-    cout << "Value not found." << endl;
 }
 
-DoublyNode* DoublyLinkedList::searchByValue(string value) {
+DoublyNode* DoublyLinkedList::search(string value) {
     DoublyNode* current = head;
     while (current != nullptr) {
         if (current->data == value) {
@@ -91,34 +83,32 @@ DoublyNode* DoublyLinkedList::searchByValue(string value) {
         }
         current = current->next;
     }
-    cout << "Value not found." << endl;
-    return;
+    return nullptr;
 }
 
 void DoublyLinkedList::print() {
     DoublyNode* current = head;
     while (current != nullptr) {
-        cout << current->data << "<-> ";
+        std::cout << current->data << " ";
         current = current->next;
     }
-    cout << "NULL" << endl;
+    std::cout << std::endl;
 }
 
-void DoublyLinkedList::saveToFile(const string& filename) {
-    ofstream file(filename);
-    if (file.is_open()) {
-        DoublyNode* current = head;
-        while (current != nullptr) {
-            file << current->data << " ";
-            current = current->next;
-        }
-        file.close();
-    } else {
-        cout << "Unable to open file." << endl;
+void DoublyLinkedList::saveToFile(const std::string& filename) {
+    std::ofstream file(filename);
+    if (!file.is_open()) {
+        std::cerr << "Failed to open file: " << filename << std::endl;
+        return;
     }
+    DoublyNode* current = head;
+    while (current != nullptr) {
+        file << current->data << " ";
+        current = current->next;
+    }
+    file.close();
 }
 
-// Загрузка списка из файла
 void DoublyLinkedList::loadFromFile(const string& filename) {
     ifstream file(filename);
     if (file.is_open()) {
