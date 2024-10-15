@@ -47,6 +47,14 @@ void processQuery(const string& query, Array& array, Stack& stack, Queue& queue,
         } else{
              cout << "Error: MADD command requires 1 argument." << endl;
         }
+    } else if (tokens[0] == "MREPLACE") {
+        if (tokens.size() == 3) {
+            int index = stoi(tokens[1]);
+            string value = tokens[2];
+            array.replace(index, value);
+        } else {
+            cout << "Error: MREPLACE command requires 2 arguments." << endl;
+        }
     }
 
     // Стек (Stack)
@@ -92,6 +100,13 @@ void processQuery(const string& query, Array& array, Stack& stack, Queue& queue,
         singlyList.removeHead();
     } else if (tokens[0] == "LSDELTAIL") {
         singlyList.removeTail();
+    } else if (tokens[0] == "LSDELVALUE"){
+        if  (tokens.size() == 2) {
+            string value = tokens[1];
+            singlyList.removeByValue(value);
+        } else {
+            cout << "Error: LSDELVALUE requires 1 argument." << endl;
+        }
     }
 
     // Двусвязный список (Doubly Linked List)
@@ -113,6 +128,13 @@ void processQuery(const string& query, Array& array, Stack& stack, Queue& queue,
         doublyList.removeFromHead();
     } else if (tokens[0] == "LDDELTAIL") {
         doublyList.removeFromTail();
+    } else if (tokens[0] == "LDDELVALUE"){
+        if  (tokens.size() == 2) {
+            string value = tokens[1];
+            doublyList.removeByValue(value);
+        } else {
+            cout << "Error: LDDELVALUE requires 1 argument." << endl;
+        }
     }
     // Хэш-таблица (HashTable)
     else if (tokens[0] == "HSET") {
