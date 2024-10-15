@@ -22,11 +22,4 @@ struct DoublyNode {
     }
 };
 
-struct HashNode {
-    string key;
-    string value;
-    HashNode* next;
 
-    // Конструктор узла с инициализацией ключа и значения
-    HashNode(const string& k, const string& v) : key(k), value(v), next(nullptr) {}
-};

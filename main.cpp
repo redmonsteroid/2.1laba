@@ -6,6 +6,7 @@
 
 using namespace std;
 
+// Функция для обработки команд
 void processQuery(const string& query, Array& array, Stack& stack, Queue& queue, SinglyLinkedList& singlyList, DoublyLinkedList& doublyList, HashTable& hashTable) {
     vector<string> tokens;
     stringstream ss(query);
@@ -15,7 +16,7 @@ void processQuery(const string& query, Array& array, Stack& stack, Queue& queue,
         tokens.push_back(token);
     }
 
-    // Массив (array)
+    // Массив (Array)
     if (tokens[0] == "MPUSH") {
         if (tokens.size() == 3) {
             int index = stoi(tokens[1]);
@@ -41,7 +42,7 @@ void processQuery(const string& query, Array& array, Stack& stack, Queue& queue,
         }
     }
 
-    // Стек (stack)
+    // Стек (Stack)
     else if (tokens[0] == "SPUSH") {
         if (tokens.size() == 2) {
             string value = tokens[1];
@@ -53,7 +54,7 @@ void processQuery(const string& query, Array& array, Stack& stack, Queue& queue,
         stack.pop();
     }
 
-    // Очередь (queue)
+    // Очередь (Queue)
     else if (tokens[0] == "QPUSH") {
         if (tokens.size() == 2) {
             string value = tokens[1];
@@ -65,7 +66,7 @@ void processQuery(const string& query, Array& array, Stack& stack, Queue& queue,
         queue.pop();
     }
 
-    // Односвязный список (singlyList)
+    // Односвязный список (Singly Linked List)
     else if (tokens[0] == "LSADDHEAD") {
         if (tokens.size() == 2) {
             string value = tokens[1];
@@ -75,7 +76,7 @@ void processQuery(const string& query, Array& array, Stack& stack, Queue& queue,
         }
     }
 
-    // Двусвязный список (doublyList)
+    // Двусвязный список (Doubly Linked List)
     else if (tokens[0] == "LDADDHEAD") {
         if (tokens.size() == 2) {
             string value = tokens[1];
@@ -85,42 +86,39 @@ void processQuery(const string& query, Array& array, Stack& stack, Queue& queue,
         }
     }
 
-    // Хэш-таблица (hashTable)
+    // Хэш-таблица (HashTable)
     else if (tokens[0] == "HSET") {
         if (tokens.size() == 3) {
             string key = tokens[1];
             string value = tokens[2];
-            hashTable.insert(key, value);
+            hashTable.hset(key, value);
         } else {
             cout << "Error: HSET command requires 2 arguments." << endl;
         }
     } else if (tokens[0] == "HGET") {
         if (tokens.size() == 2) {
             string key = tokens[1];
-            string value = hashTable.get(key);
-            cout << "Value for key [" << key << "]: " << value << endl;
-        } else {
-            cout << "Error: HGET command requires 1 argument." << endl;
+            hashTable.hget(key);
         }
     } else if (tokens[0] == "HDEL") {
         if (tokens.size() == 2) {
             string key = tokens[1];
-            hashTable.remove(key);
+            hashTable.hdel(key);
         } else {
             cout << "Error: HDEL command requires 1 argument." << endl;
         }
     } else if (tokens[0] == "HPRINT") {
-        hashTable.print();
+        hashTable.hprint();
     }
 
-    // Общая операция PRINT
+    // Общая операция PRINT для всех структур данных
     else if (tokens[0] == "PRINT") {
         array.print();
         stack.print();
         queue.print();
         singlyList.print();
         doublyList.print();
-        hashTable.print();
+        hashTable.hprint();
     } else {
         cout << "Unknown command: " << tokens[0] << endl;
     }
@@ -130,12 +128,12 @@ int main(int argc, char* argv[]) {
     string query;
     string filename;
     int capacity = 10; 
-    Array array(capacity); 
-    Stack stack;           
-    Queue queue;           
-    SinglyLinkedList singlyList;
-    DoublyLinkedList doublyList;
-    HashTable hashTable(capacity);  // Хэш-таблица
+    Array array(capacity);   // Массив
+    Stack stack;             // Стек
+    Queue queue;             // Очередь
+    SinglyLinkedList singlyList;   // Односвязный список
+    DoublyLinkedList doublyList;   // Двусвязный список
+    HashTable hashTable(capacity); // Хэш-таблица
 
     // Чтение аргументов командной строки
     for (int i = 1; i < argc; i++) {

@@ -86,22 +86,31 @@ struct Queue {
     void loadFromFile(const std::string& filename);
 };
 
+struct HashNode {
+    std::string key;
+    std::string value;
+    HashNode* next;
+
+    HashNode(const std::string& k, const std::string& v, HashNode* nextNode = nullptr)
+        : key(k), value(v), next(nextNode) {}
+};
+
+// Класс HashTable для реализации хеш-таблицы
 class HashTable {
-private:
-    HashNode** table;
-    int capacity;
-
-    int hashFunction(const std::string& key) const;
-    void clearTable(HashNode** table, int size);
-
 public:
-    HashTable(int size);
+    HashTable(int size = 10);
     ~HashTable();
 
-    void insert(const std::string& key, const std::string& value);
-    std::string get(const std::string& key);
-    void remove(const std::string& key);
+    void hset(const std::string& key, const std::string& value);
+    void hget(const std::string& key) const;
+    void hdel(const std::string& key);
+    void clear();
     void saveToFile(const std::string& filename);
     void loadFromFile(const std::string& filename);
-    void print() const;
+    void hprint() const;
+
+private:
+    int hashFunction(const std::string& key) const;
+    HashNode** table;
+    int capacity;
 };

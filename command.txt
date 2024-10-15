@@ -30,3 +30,8 @@
 
 --принт--
 ./dbms --file data.txt --query 'PRINT'
+
+--хэш таблица-- 
+./dbms --file data.txt --query 'HSET key2 data1'
+./dbms --file data.txt --query 'HDEL key2' 
+./dbms --file data.txt --query 'HGET key 2' 

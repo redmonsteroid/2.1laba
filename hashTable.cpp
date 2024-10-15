@@ -1,11 +1,7 @@
-#include "node.hpp"
 #include "mainHeader.hpp"
 #include <fstream>
-#include <string>
-#include <iostream>
-
-using namespace std;
-
+#include <sstream>
+// Конструктор хеш-таблицы
 HashTable::HashTable(int size) {
     capacity = size;
     table = new HashNode*[capacity];
@@ -14,65 +10,53 @@ HashTable::HashTable(int size) {
     }
 }
 
+// Деструктор хеш-таблицы
 HashTable::~HashTable() {
-    clearTable(table, capacity);
+    clear();  // Очищаем всю таблицу при удалении
+    delete[] table;
 }
 
-// Хеш-функция для вычисления индекса на основе ключа
-int HashTable::hashFunction(const string& key) const {
-    int hash = 0;
-    for (char ch : key) {
-        hash = (hash * 31 + ch) % capacity;
-    }
-    return hash;
-}
+// Функция для вставки значения по ключу
+void HashTable::hset(const std::string& key, const std::string& value) {
+    int index = hashFunction(key); // Получаем индекс для ключа
+    HashNode* current = table[index]; // Получаем узел по индексу
 
-// Функция для добавления или обновления элемента
-void HashTable::insert(const string& key, const string& value) {
-    int index = hashFunction(key);
-    HashNode* prev = nullptr;
-    HashNode* current = table[index];
-
-    while (current != nullptr && current->key != key) {
-        prev = current;
-        current = current->next;
-    }
-
-    if (current == nullptr) {  // Ключ не найден, создаем новый элемент
-        HashNode* newNode = new HashNode(key, value);
-        if (prev == nullptr) {  // Вставляем в начало цепочки
-            table[index] = newNode;
-        } else {                // Добавляем в конец цепочки
-            prev->next = newNode;
+    // Проходим по списку в ячейке хэш-таблицы
+    while (current != nullptr) {
+        // Если ключ найден, обновляем значение
+        if (current->key == key) {
+            current->value = value;
+            return; // Выходим из функции, так как значение обновлено
         }
-        cout << "Inserted: [" << key << "] -> " << value << endl;
-    } else {  // Ключ уже существует, обновляем значение
-        current->value = value;
-        cout << "Updated: [" << key << "] -> " << value << endl;
+        current = current->next; // Переходим к следующему узлу
     }
+
+    // Если ключ не найден, добавляем новый узел в начало списка
+    HashNode* newNode = new HashNode(key, value);
+    newNode->next = table[index]; // Устанавливаем следующий узел
+    table[index] = newNode; // Устанавливаем новый узел как первый в списке
 }
+
 
 // Функция для получения значения по ключу
-string HashTable::get(const string& key) {
+void HashTable::hget(const std::string& key) const {
     int index = hashFunction(key);
     HashNode* current = table[index];
-
     while (current != nullptr) {
         if (current->key == key) {
-            cout << "Found: [" << key << "] -> " << current->value << endl;
-            return current->value;
+            std::cout << "Value for key [" << key << "]: " << current->value << std::endl;
+            return;
         }
         current = current->next;
     }
-    cout << "Key [" << key << "] not found!" << endl;
-    return "";
+    std::cout << "Key [" << key << "] not found." << std::endl;
 }
 
 // Функция для удаления элемента по ключу
-void HashTable::remove(const string& key) {
+void HashTable::hdel(const std::string& key) {
     int index = hashFunction(key);
-    HashNode* prev = nullptr;
     HashNode* current = table[index];
+    HashNode* prev = nullptr;
 
     while (current != nullptr && current->key != key) {
         prev = current;
@@ -80,66 +64,22 @@ void HashTable::remove(const string& key) {
     }
 
     if (current == nullptr) {
-        cout << "Key [" << key << "] not found!" << endl;
+        std::cout << "Key [" << key << "] not found for deletion." << std::endl;
         return;
     }
 
-    if (prev == nullptr) {  // Удаление первого элемента в цепочке
+    if (prev == nullptr) {
         table[index] = current->next;
-    } else {                // Удаление элемента в середине или конце цепочки
+    } else {
         prev->next = current->next;
     }
 
-    delete current;  // Освобождение памяти
-    cout << "Deleted: [" << key << "]" << endl;
-}
-
-// Функция для сохранения хеш-таблицы в файл
-void HashTable::saveToFile(const string& filename) {
-    ofstream outFile(filename);
-    if (outFile.is_open()) {
-        for (int i = 0; i < capacity; ++i) {
-            HashNode* current = table[i];
-            while (current != nullptr) {
-                outFile << current->key << " " << current->value << endl;
-                current = current->next;
-            }
-        }
-        outFile.close();
-    } else {
-        cerr << "Unable to open file for writing!" << endl;
-    }
-}
-
-// Функция для загрузки хеш-таблицы из файла
-void HashTable::loadFromFile(const string& filename) {
-    ifstream inFile(filename);
-    if (inFile.is_open()) {
-        string key, value;
-        clearTable(table, capacity);  // Очищаем текущую хеш-таблицу перед загрузкой
-        while (inFile >> key >> value) {
-            insert(key, value);
-        }
-        inFile.close();
-    } else {
-        cerr << "Unable to open file for reading!" << endl;
-    }
-}
-
-// Функция для вывода всех элементов хеш-таблицы
-void HashTable::print() const {
-    for (int i = 0; i < capacity; ++i) {
-        HashNode* current = table[i];
-        while (current != nullptr) {
-            cout << "[" << current->key << "] -> " << current->value << endl;
-            current = current->next;
-        }
-    }
+    delete current;
 }
 
 // Функция для очистки хеш-таблицы
-void HashTable::clearTable(HashNode** table, int size) {
-    for (int i = 0; i < size; ++i) {
+void HashTable::clear() {
+    for (int i = 0; i < capacity; ++i) {
         HashNode* current = table[i];
         while (current != nullptr) {
             HashNode* temp = current;
@@ -148,5 +88,65 @@ void HashTable::clearTable(HashNode** table, int size) {
         }
         table[i] = nullptr;
     }
-    delete[] table;
+}
+
+// Хэш-функция для ключа
+int HashTable::hashFunction(const std::string& key) const {
+    int hash = 0;
+    for (char ch : key) {
+        hash = (hash * 31 + ch) % capacity;  // Простая хэш-функция
+    }
+    return hash;
+}
+
+// Функция для печати содержимого хеш-таблицы
+void HashTable::hprint() const {
+    for (int i = 0; i < capacity; ++i) {
+        HashNode* current = table[i];
+        if (current != nullptr) {
+            std::cout << "[" << i << "]: ";
+            while (current != nullptr) {
+                std::cout << current->key << " => " << current->value << " ";
+                current = current->next;
+            }
+            std::cout << std::endl;
+        }
+    }
+}
+
+// Функция для загрузки данных из файла
+void HashTable::loadFromFile(const std::string& filename) {
+    std::ifstream file(filename);
+    if (file.is_open()) {
+        clear();  // Очищаем текущую хеш-таблицу перед загрузкой
+
+        std::string line;
+        while (std::getline(file, line)) {
+            std::stringstream ss(line);
+            std::string key, value;
+            ss >> key >> value;
+            hset(key, value);
+        }
+
+        file.close();
+    } else {
+        std::cerr << "Error: could not open file " << filename << std::endl;
+    }
+}
+
+// Функция для сохранения данных в файл
+void HashTable::saveToFile(const std::string& filename) {
+    std::ofstream file(filename);
+    if (file.is_open()) {
+        for (int i = 0; i < capacity; ++i) {
+            HashNode* current = table[i];
+            while (current != nullptr) {
+                file << current->key << " " << current->value << std::endl;
+                current = current->next;
+            }
+        }
+        file.close();
+    } else {
+        std::cerr << "Error: could not open file " << filename << std::endl;
+    }
 }
