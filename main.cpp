@@ -40,6 +40,13 @@ void processQuery(const string& query, Array& array, Stack& stack, Queue& queue,
         } else {
             cout << "Error: MGET command requires 1 argument." << endl;
         }
+    } else if (tokens[0] == "MADD") {
+        if (tokens.size() == 2) {
+            string value = tokens[1];
+             array.addToTheEnd(value);
+        } else{
+             cout << "Error: MADD command requires 1 argument." << endl;
+        }
     }
 
     // Стек (Stack)
