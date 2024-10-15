@@ -2,7 +2,6 @@
 #include <sstream>
 #include <vector>
 #include "mainHeader.hpp"
-#include "CBTree.hpp" 
 #include <fstream>
 
 using namespace std;
@@ -75,18 +74,39 @@ void processQuery(const string& query, Array& array, Stack& stack, Queue& queue,
         } else {
             cout << "Error: LSADDHEAD requires 1 argument." << endl;
         }
+    } else if (tokens[0] == "LSADDTAIL") {
+        if (tokens.size() == 2) {
+            string value = tokens[1];
+            singlyList.addToTail(value);
+        } else {
+            cout << "Error: LSADDTAIL requires 1 argument." << endl;
+        }
+    } else if (tokens[0] == "LSDELHEAD") {
+        singlyList.removeHead();
+    } else if (tokens[0] == "LSDELTAIL") {
+        singlyList.removeTail();
     }
 
     // Двусвязный список (Doubly Linked List)
-    else if (tokens[0] == "LDADDHEAD") {
+   else if (tokens[0] == "LDADDHEAD") {
         if (tokens.size() == 2) {
             string value = tokens[1];
             doublyList.addToHead(value);
         } else {
             cout << "Error: LDADDHEAD requires 1 argument." << endl;
         }
+    } else if (tokens[0] == "LDADDTAIL") {
+        if (tokens.size() == 2) {
+            string value = tokens[1];
+            doublyList.addToTail(value);
+        } else {
+            cout << "Error: LDADDTAIL requires 1 argument." << endl;
+        }
+    } else if (tokens[0] == "LDDELHEAD") {
+        doublyList.removeFromHead();
+    } else if (tokens[0] == "LDDELTAIL") {
+        doublyList.removeFromTail();
     }
-
     // Хэш-таблица (HashTable)
     else if (tokens[0] == "HSET") {
         if (tokens.size() == 3) {
@@ -149,7 +169,6 @@ void processQuery(const string& query, Array& array, Stack& stack, Queue& queue,
         singlyList.print();
         doublyList.print();
         hashTable.hprint();
-        cbTree.display();  // Display complete binary tree
     } else {
         cout << "Unknown command: " << tokens[0] << endl;
     }
@@ -210,6 +229,16 @@ int main(int argc, char* argv[]) {
         // Проверка команд для полного бинарного дерева
         else if (command[0] == 'T') {
             cbTree.load_from_file(filename);
+        }
+        else if (command == "PRINT") {
+            std::ifstream file(filename);
+            if (!file.is_open()) {
+            std::cerr << "Error: could not open file " << filename << std::endl;
+            return 1;}
+            std::string line;
+            while (std::getline(file, line)) {
+            std::cout << line << std::endl;}
+            file.close(); // Закрытие файла
         } else {
             cout << "Error: unrecognized command type." << endl;
             return 1;

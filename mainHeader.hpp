@@ -114,3 +114,19 @@ private:
     HashNode** table;
     int capacity;
 };
+
+struct CBTree {
+    tree_node* root;
+    CBTree() : root(nullptr) {}
+
+    void insert(int digit);
+    bool is_CBT();
+    bool get_value(int value);
+    void find_index(int index);
+    bool find_value(tree_node* current, int value);
+    void display();
+    void load_from_file(const std::string& file);
+    void save_to_file(const std::string& file);
+    void clear(tree_node*& node);
+    void print_CBT(tree_node* current, int level);
+};
