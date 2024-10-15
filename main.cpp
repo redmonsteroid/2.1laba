@@ -2,12 +2,13 @@
 #include <sstream>
 #include <vector>
 #include "mainHeader.hpp"
+#include "CBTree.hpp" 
 #include <fstream>
 
 using namespace std;
 
 // Функция для обработки команд
-void processQuery(const string& query, Array& array, Stack& stack, Queue& queue, SinglyLinkedList& singlyList, DoublyLinkedList& doublyList, HashTable& hashTable) {
+void processQuery(const string& query, Array& array, Stack& stack, Queue& queue, SinglyLinkedList& singlyList, DoublyLinkedList& doublyList, HashTable& hashTable, CBTree& cbTree) {
     vector<string> tokens;
     stringstream ss(query);
     string token;
@@ -111,6 +112,35 @@ void processQuery(const string& query, Array& array, Stack& stack, Queue& queue,
         hashTable.hprint();
     }
 
+    // Полное бинарное дерево (CBTree)
+    else if (tokens[0] == "TINSERT") {
+        if (tokens.size() == 2) {
+            int digit = stoi(tokens[1]);
+            cbTree.insert(digit);
+        } else {
+            cout << "Error: TINSERT command requires 1 argument." << endl;
+        }
+    } else if (tokens[0] == "TISCBT") {
+        if (cbTree.is_CBT()) {
+            cout << "The tree is a complete binary tree." << endl;
+        } else {
+            cout << "The tree is not a complete binary tree." << endl;
+        }
+    } else if (tokens[0] == "TFIND") {
+        if (tokens.size() == 2) {
+            int value = stoi(tokens[1]);
+            if (cbTree.get_value(value)) {
+                cout << "Value " << value << " found in the tree." << endl;
+            } else {
+                cout << "Value " << value << " not found in the tree." << endl;
+            }
+        } else {
+            cout << "Error: CBFIND command requires 1 argument." << endl;
+        }
+    } else if (tokens[0] == "TDISPLAY") {
+        cbTree.display();
+    }
+
     // Общая операция PRINT для всех структур данных
     else if (tokens[0] == "PRINT") {
         array.print();
@@ -119,6 +149,7 @@ void processQuery(const string& query, Array& array, Stack& stack, Queue& queue,
         singlyList.print();
         doublyList.print();
         hashTable.hprint();
+        cbTree.display();  // Display complete binary tree
     } else {
         cout << "Unknown command: " << tokens[0] << endl;
     }
@@ -127,13 +158,13 @@ void processQuery(const string& query, Array& array, Stack& stack, Queue& queue,
 int main(int argc, char* argv[]) {
     string query;
     string filename;
-    int capacity = 10; 
-    Array array(capacity);   // Массив
-    Stack stack;             // Стек
-    Queue queue;             // Очередь
+    Array array(10);   // Массив
+    Stack stack;       // Стек
+    Queue queue;       // Очередь
     SinglyLinkedList singlyList;   // Односвязный список
     DoublyLinkedList doublyList;   // Двусвязный список
-    HashTable hashTable(capacity); // Хэш-таблица
+    HashTable hashTable(10); // Хэш-таблица
+    CBTree cbTree;           // Полное бинарное дерево
 
     // Чтение аргументов командной строки
     for (int i = 1; i < argc; i++) {
@@ -175,21 +206,10 @@ int main(int argc, char* argv[]) {
         // Проверка команд для хэш-таблицы
         else if (command[0] == 'H') {
             hashTable.loadFromFile(filename);
-        } else if (command == "PRINT") {
-            if (!filename.empty()) {
-                ifstream file(filename);
-                if (file.is_open()) {
-                    string line;
-                    while (getline(file, line)) {
-                        cout << line << endl;
-                    }
-                    file.close();
-                } else {
-                    cout << "Error: could not open file " << filename << endl;
-                }
-            } else {
-                cout << "Error: no file specified for PRINT." << endl;
-            }
+        }
+        // Проверка команд для полного бинарного дерева
+        else if (command[0] == 'T') {
+            cbTree.load_from_file(filename);
         } else {
             cout << "Error: unrecognized command type." << endl;
             return 1;
@@ -198,7 +218,7 @@ int main(int argc, char* argv[]) {
 
     // Выполнение запроса
     if (!query.empty()) {
-        processQuery(query, array, stack, queue, singlyList, doublyList, hashTable);
+        processQuery(query, array, stack, queue, singlyList, doublyList, hashTable, cbTree);
     } else {
         cout << "Error: query not specified." << endl;
         return 1;
@@ -210,29 +230,33 @@ int main(int argc, char* argv[]) {
         string command;
         ss >> command;
 
-        // Сохранение данных только для нужной структуры
+        // Проверка команд для массива
         if (command[0] == 'M') {
             array.saveToFile(filename);
         }
+        // Проверка команд для стека
         else if (command[0] == 'S') {
             stack.saveToFile(filename);
         }
+        // Проверка команд для очереди
         else if (command[0] == 'Q') {
             queue.saveToFile(filename);
         }
+        // Проверка команд для односвязного списка
         else if (command[0] == 'L' && command[1] == 'S') {
             singlyList.saveToFile(filename);
         }
+        // Проверка команд для двусвязного списка
         else if (command[0] == 'L' && command[1] == 'D') {
             doublyList.saveToFile(filename);
         }
+        // Проверка команд для хэш-таблицы
         else if (command[0] == 'H') {
             hashTable.saveToFile(filename);
-        } else if (command == "PRINT") {
-           return 1; 
-        } else {
-            cout << "Error: unrecognized command type." << endl;
-            return 1;
+        }
+        // Проверка команд для полного бинарного дерева
+        else if (command[0] == 'T') {
+            cbTree.save_to_file(filename);
         }
     }
 

@@ -21,5 +21,3 @@ struct DoublyNode {
         : data(value), next(nextNode), prev(prevNode) {
     }
 };
-
-

@@ -34,4 +34,10 @@
 --хэш таблица-- 
 ./dbms --file data.txt --query 'HSET key2 data1'
 ./dbms --file data.txt --query 'HDEL key2' 
-./dbms --file data.txt --query 'HGET key 2' 
+./dbms --file data.txt --query 'HGET key 2'
+
+--дерево--
+./dbms --file tree.txt --query 'TINSERT 2'
+./dbms --file tree.txt --query 'TDISPLAY' 
+./dbms --file tree.txt --query 'TISCBT' 
+./dbms --file tree.txt --query 'TFIND 5'
