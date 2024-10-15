@@ -85,3 +85,23 @@ struct Queue {
     void saveToFile(const std::string& filename);
     void loadFromFile(const std::string& filename);
 };
+
+class HashTable {
+private:
+    HashNode** table;
+    int capacity;
+
+    int hashFunction(const std::string& key) const;
+    void clearTable(HashNode** table, int size);
+
+public:
+    HashTable(int size);
+    ~HashTable();
+
+    void insert(const std::string& key, const std::string& value);
+    std::string get(const std::string& key);
+    void remove(const std::string& key);
+    void saveToFile(const std::string& filename);
+    void loadFromFile(const std::string& filename);
+    void print() const;
+};
