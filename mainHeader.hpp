@@ -4,23 +4,23 @@
 using namespace std;
 
 struct Array {
-    Node *head;
-    int size;
-    int maxCapacity;  // макс размер 
+    string* data;    // Массив строк
+    int size;        // Текущий размер массива
+    int maxCapacity; // Максимальная вместимость
 
     // Конструкторы
-    Array() : head(nullptr), size(0), maxCapacity(0) {}
-    Array(int max) : head(nullptr), size(0), maxCapacity(max) {}
+    Array(int max);
+    ~Array();
 
     void add(int index, string value);
     void addToTheEnd(string value);
     string get(int index);
     void remove(int index);
-    void replace(int index, std::string value);
+    void replace(int index, string value);
     int length();
     void print();
-    void saveToFile(const std::string& filename);
-    void loadFromFile(const std::string& filename);
+    void saveToFile(const string& filename);
+    void loadFromFile(const string& filename);
 };
 
 struct SinglyLinkedList {

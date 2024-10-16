@@ -1,32 +1,40 @@
-#include "node.hpp"
 #include "mainHeader.hpp"
 #include <fstream>
 #include <string>
+#include <iostream>
 
 using namespace std;
 
+Array::Array(int capacity) {
+    maxCapacity = capacity;
+    size = 0;
+    data = new string[maxCapacity]; 
+}
+
+Array::~Array() {
+    delete[] data; // Освобождаем память при уничтожении объекта
+}
+
 void Array::add(int index, string value) {
-    if (index < 0 || index > size || size>=maxCapacity) {
-        cout << "Index invalid" << endl;
+    if (index < 0 || index > size || size >= maxCapacity) {
+        cout << "Index invalid or array is full" << endl;
         return;
     }
-    Node *newNode = new Node(value);
-    if (index == 0) {
-        newNode->next = head;
-        head = newNode;
-    } else {
-        Node *temp = head;
-        for (int i = 0; i < index - 1; i++) {
-            temp = temp->next;
-        }
-        newNode->next = temp->next;
-        temp->next = newNode;
+    // Сдвигаем элементы вправо начиная с указанного индекса
+    for (int i = size; i > index; i--) {
+        data[i] = data[i - 1];
     }
+    data[index] = value; // Вставляем элемент
     size++;
 }
 
 void Array::addToTheEnd(string value) {
-    add(size, value); // Добавляем элемент value в конец
+    if (size >= maxCapacity) {
+        cout << "Array is full" << endl;
+        return;
+    }
+    data[size] = value; // Вставляем элемент в конец
+    size++;
 }
 
 void Array::remove(int index) {
@@ -34,20 +42,11 @@ void Array::remove(int index) {
         cout << "Index invalid" << endl;
         return;
     }
-    Node *deleteNode = nullptr;
-    if (index == 0) {
-        deleteNode = head;
-        head = head->next;
-    } else {
-        Node *temp = head;
-        for (int i = 0; i < index - 1; i++) {
-            temp = temp->next;
-        }
-        deleteNode = temp->next;
-        temp->next = deleteNode->next;
+    // Сдвигаем элементы влево начиная с указанного индекса
+    for (int i = index; i < size - 1; i++) {
+        data[i] = data[i + 1];
     }
     size--;
-    delete deleteNode;
 }
 
 void Array::replace(int index, string value) {
@@ -55,18 +54,12 @@ void Array::replace(int index, string value) {
         cout << "Index invalid" << endl;
         return;
     }
-    Node *temp = head;
-    for (int i = 0; i < index; i++) {
-        temp = temp->next;
-    }
-    temp->data = value;
+    data[index] = value; // Замена элемента на заданном индексе
 }
 
 void Array::print() {
-    Node *temp = head;
-    while (temp) {
-        cout << temp->data << " ";
-        temp = temp->next;
+    for (int i = 0; i < size; i++) {
+        cout << data[i] << " ";
     }
     cout << endl;
 }
@@ -81,10 +74,8 @@ void Array::saveToFile(const string& filename) {
         cout << "Cannot open file for writing: " << filename << endl;
         return;
     }
-    Node* temp = head;
-    while (temp) {
-        outFile << temp->data << endl;
-        temp = temp->next;
+    for (int i = 0; i < size; i++) {
+        outFile << data[i] << endl;
     }
     outFile.close();
 }
@@ -96,19 +87,18 @@ void Array::loadFromFile(const string& filename) {
         return;
     }
     string line;
-    while (getline(inFile, line)) {
-        addToTheEnd(line);
+    size = 0; // Очищаем массив перед загрузкой
+    while (getline(inFile, line) && size < maxCapacity) {
+        data[size] = line;
+        size++;
     }
     inFile.close();
 }
+
 string Array::get(int index) {
     if (index < 0 || index >= size) {
         cout << "Index invalid" << endl;
         return "";
     }
-    Node* temp = head;
-    for (int i = 0; i < index; i++) {
-        temp = temp->next;
-    }
-    return temp->data;
+    return data[index]; // Возвращаем элемент по индексу
 }
